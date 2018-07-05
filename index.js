@@ -16,7 +16,7 @@ if (config.arest.enabled) {
 
 app.get('/sensor/dht', (_, res) => {
   const response = dhtSensor();
-  res.json(response)
+  return res.json(response);
 });
 
 const server = app.listen(config.port, () => {
