@@ -1,0 +1,13 @@
+[Unit]
+Description=Node sensor Express server
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/node /home/pi/rpi-zero-w-sensors/index.js
+Restart=on-failure
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
