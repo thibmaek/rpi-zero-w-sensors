@@ -1,24 +1,37 @@
-const express = require('express');
+// const express = require('express');
+const mqtt = require('mqtt');
 
 const config = require('./env.json');
 const initializeSensors = require('./lib/initializeSensors');
 const dhtSensor = require('./routes/sensors/dht');
 
-const app = express();
 initializeSensors();
 
-if (config.arest.enabled) {
-  const aRest = require('pi-arest')(app);
-  aRest.set_id(config.arest.id);
-  aRest.set_name(config.arest.name);
-  aRest.connect();
+const MQTT_Settings = {
+  get baseTopic() {
+    if(config.mqtt.homeassistant) {
+      return `homeassistant/zero-w-sensors`;
+    }
+
+    return "zero-w-sensors";
+  },
+
+  get client() {
+    return `mqtt://${config.mqtt.broker}`;
+  }
 }
 
-app.get('/sensor/dht', (_, res) => {
-  const response = dhtSensor();
-  return res.json(response);
+const client = mqtt.connect(MQTT_Settings.client, {
+  password: config.mqtt.password,
+  port: config.mqtt.port,
+  username: config.mqtt.user,
 });
 
-const server = app.listen(config.port, () => {
-  console.log('Listening on port %d', server.address().port);
+client.on('connect', () => {
+  console.log(`Connected to ${MQTT_Settings.client}`);
+
+  setInterval(() => {
+    const dhtData = dhtSensor();
+    client.publish(`${MQTT_Settings.baseTopic}/dht`, JSON.stringify(dhtData));
+  }, config.sensors.defaultPollingInterval);
 });

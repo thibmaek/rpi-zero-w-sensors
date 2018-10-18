@@ -7,6 +7,6 @@ module.exports = () => {
     humidity: humidity.toFixed(0)
   }
 
-  console.log({response});
+  console.log("[Sensor: DHT]", { response });
   return response;
 }
