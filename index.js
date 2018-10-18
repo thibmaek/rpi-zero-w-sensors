@@ -27,10 +27,17 @@ const client = mqtt.connect(MQTT_Settings.client, {
 });
 
 client.on('connect', () => {
-  console.log(`Connected to ${MQTT_Settings.client}`);
+  console.log(`Connected to ${MQTT_Settings.client}:${config.mqtt.port}`);
 
   setInterval(() => {
+    client.publish(`${MQTT_Settings.baseTopic}/info`, "New rpi-zero-w-sensor-state");
+
     const dhtData = dhtSensor();
-    client.publish(`${MQTT_Settings.baseTopic}/dht`, JSON.stringify(dhtData));
+    client.publish(`${MQTT_Settings.baseTopic}/dht`, JSON.stringify(dhtData), {}, (err) => {
+      console.error(`
+        Error publishing: ${MQTT_Settings.baseTopic}/dht:
+          ${err.toString()}
+      `);
+    });
   }, config.sensors.defaultPollingInterval);
 });
