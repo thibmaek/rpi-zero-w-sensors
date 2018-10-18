@@ -34,10 +34,12 @@ client.on('connect', () => {
 
     const dhtData = dhtSensor();
     client.publish(`${MQTT_Settings.baseTopic}/dht`, JSON.stringify(dhtData), {}, (err) => {
-      console.error(`
-        Error publishing: ${MQTT_Settings.baseTopic}/dht:
-          ${err.toString()}
-      `);
+      if (err) {
+        console.error(`
+          Error publishing: ${MQTT_Settings.baseTopic}/dht:
+            ${err.toString()}
+        `);
+      }
     });
   }, config.sensors.defaultPollingInterval);
 });
