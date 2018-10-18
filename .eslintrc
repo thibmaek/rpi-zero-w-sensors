@@ -1,0 +1,6 @@
+{
+  "extends": "thibmaek",
+  "rules": {
+    "import/no-common-js": "off"
+  }
+}

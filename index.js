@@ -2,9 +2,13 @@ const mqtt = require('mqtt');
 
 const config = require('./env.json');
 const initializeSensors = require('./lib/initializeSensors');
-const dhtSensor = require('./routes/sensors/dht');
+const dht = require('./sensors/dht');
 
-initializeSensors();
+try {
+  initializeSensors();
+} catch (error) {
+  console.error(`Could not initialize sensors because the following error occured:`, err.toString());
+}
 
 const MQTT_Settings = {
   get baseTopic() {
@@ -12,13 +16,14 @@ const MQTT_Settings = {
       return `homeassistant/zero-w-sensors`;
     }
 
-    return "zero-w-sensors";
+    return "rpi-zero-w-sensors";
   },
 
   get client() {
     return `mqtt://${config.mqtt.broker}`;
   }
 }
+exports.MQTT_Settings = MQTT_Settings;
 
 const client = mqtt.connect(MQTT_Settings.client, {
   password: config.mqtt.password,
@@ -30,16 +35,7 @@ client.on('connect', () => {
   console.log(`Connected to ${MQTT_Settings.client}:${config.mqtt.port}`);
 
   setInterval(() => {
-    client.publish(`${MQTT_Settings.baseTopic}/info`, "New rpi-zero-w-sensor-state");
-
-    const dhtData = dhtSensor();
-    client.publish(`${MQTT_Settings.baseTopic}/dht`, JSON.stringify(dhtData), {}, (err) => {
-      if (err) {
-        console.error(`
-          Error publishing: ${MQTT_Settings.baseTopic}/dht:
-            ${err.toString()}
-        `);
-      }
-    });
+    const dhtData = dht.getSensorData();
+    dht.publishTopic(client, dhtData);
   }, config.sensors.defaultPollingInterval);
 });

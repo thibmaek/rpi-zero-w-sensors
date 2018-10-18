@@ -17,5 +17,8 @@
     "mqtt": "^2.18.8",
     "node-dht-sensor": "^0.0.34"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^5.7.0",
+    "eslint-config-thibmaek": "^1.0.4"
+  }
 }
