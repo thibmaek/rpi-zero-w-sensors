@@ -1,5 +1,5 @@
 const dht = require(`node-dht-sensor`);
-const { MQTT_Settings } = `../`;
+const { MQTT_Settings } = require(`../`);
 
 exports.getSensorData = () => {
   const { temperature, humidity  } = dht.read();
