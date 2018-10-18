@@ -23,7 +23,6 @@ const MQTT_Settings = {
     return `mqtt://${config.mqtt.broker}`;
   },
 };
-exports.MQTT_Settings = MQTT_Settings;
 
 const client = mqtt.connect(MQTT_Settings.client, {
   password: config.mqtt.password,
@@ -39,3 +38,7 @@ client.on(`connect`, () => {
     dht.publishTopic(client, dhtData);
   }, config.sensors.defaultPollingInterval);
 });
+
+module.exports = {
+  MQTT_Settings,
+};
