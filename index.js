@@ -1,4 +1,3 @@
-// const express = require('express');
 const mqtt = require('mqtt');
 
 const config = require('./env.json');
