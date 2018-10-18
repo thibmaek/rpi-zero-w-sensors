@@ -10,6 +10,18 @@ Make sure you have Node installed on your Raspberry Pi. This project was develop
 There is a basic systemd service provided which you can manually copy or install in the correct location with `npm run install:systemd-service`.
 Then just reload, enable & start the service with `systemctl`.
 
+## Subscribing to a topic
+
+When you have started the relay, subscribe to either one of the topics in Publications below or use a wildcard to see what data gets published:
+
+```console
+# Using mosquitto and a local broker in this example
+$ mosquitto_sub -h localhost -p 1883 -u test -P test -t "rpi-zero-w-sensors/#"
+
+# Using mosquitto and Home Assistant in this example
+$ mosquitto_sub -h hassio.local -p 1883 -u test -P test -t "homeassistant/rpi-zero-w-sensors/#"
+```
+
 ## Publications
 
 Set `mqtt.homeassistant` to true in env.json to have topics prefixed with 'homeassistant'.

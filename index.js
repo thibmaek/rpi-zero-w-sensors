@@ -1,5 +1,6 @@
 const mqtt = require(`mqtt`);
 
+const project = require(`./package.json`);
 const config = require(`./env.json`);
 const initializeSensors = require(`./lib/initializeSensors`);
 const dht = require(`./sensors/dht`);
@@ -13,10 +14,10 @@ try {
 const mqttSettings = {
   get baseTopic() {
     if (config.mqtt.homeassistant) {
-      return `homeassistant/zero-w-sensors`;
+      return `homeassistant/${project.name}`;
     }
 
-    return `rpi-zero-w-sensors`;
+    return project.name;
   },
 
   get client() {
