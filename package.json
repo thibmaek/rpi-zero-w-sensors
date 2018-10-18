@@ -8,7 +8,7 @@
     "lint": "eslint *.js",
     "lint:fix": "npm run lint -- --fix",
     "start": "node index.js",
-    "start:debug": "node --inspect-brk=raspberrypi.local:9229 index.js"
+    "start:debug": "./scripts/setup.sh start_debugger"
   },
   "engines": {
     "node": ">=8",
