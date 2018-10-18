@@ -1,5 +1,5 @@
 const dht = require(`node-dht-sensor`);
-const { MQTT_Settings } = require(`../`);
+const { mqttSettings } = require(`../index.js`);
 
 exports.getSensorData = () => {
   const { temperature, humidity  } = dht.read();
@@ -13,28 +13,28 @@ exports.getSensorData = () => {
 };
 
 exports.publishTopic = (client, data) => {
-  client.publish(`${MQTT_Settings.baseTopic}/dht`, JSON.stringify(data), {}, err => {
+  client.publish(`${mqttSettings.baseTopic}/dht`, JSON.stringify(data), {}, err => {
     if (err) {
       console.error(`
-        Error publishing: ${MQTT_Settings.baseTopic}/dht:
+        Error publishing: ${mqttSettings.baseTopic}/dht:
           ${err.toString()}
       `);
     }
   });
 
-  client.publish(`${MQTT_Settings.baseTopic}/dht/temperature`, `${data.temperature}`, {}, err => {
+  client.publish(`${mqttSettings.baseTopic}/dht/temperature`, `${data.temperature}`, {}, err => {
     if (err) {
       console.error(`
-        Error publishing: ${MQTT_Settings.baseTopic}/dht/temperature:
+        Error publishing: ${mqttSettings.baseTopic}/dht/temperature:
           ${err.toString()}
       `);
     }
   });
 
-  client.publish(`${MQTT_Settings.baseTopic}/dht/humidity`, `${data.humidity}`, {}, err => {
+  client.publish(`${mqttSettings.baseTopic}/dht/humidity`, `${data.humidity}`, {}, err => {
     if (err) {
       console.error(`
-        Error publishing: ${MQTT_Settings.baseTopic}/dht/humidity:
+        Error publishing: ${mqttSettings.baseTopic}/dht/humidity:
           ${err.toString()}
       `);
     }

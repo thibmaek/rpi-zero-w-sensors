@@ -10,7 +10,7 @@ try {
   console.error(`Could not initialize sensors because the following error occured:`, err.toString());
 }
 
-const MQTT_Settings = {
+const mqttSettings = {
   get baseTopic() {
     if (config.mqtt.homeassistant) {
       return `homeassistant/zero-w-sensors`;
@@ -23,22 +23,19 @@ const MQTT_Settings = {
     return `mqtt://${config.mqtt.broker}`;
   },
 };
+exports.mqttSettings = mqttSettings;
 
-const client = mqtt.connect(MQTT_Settings.client, {
+const client = mqtt.connect(mqttSettings.client, {
   password: config.mqtt.password,
   port: config.mqtt.port,
   username: config.mqtt.user,
 });
 
 client.on(`connect`, () => {
-  console.log(`Connected to ${MQTT_Settings.client}:${config.mqtt.port}`);
+  console.log(`Connected to ${mqttSettings.client}:${config.mqtt.port}`);
 
   setInterval(() => {
     const dhtData = dht.getSensorData();
     dht.publishTopic(client, dhtData);
   }, config.sensors.defaultPollingInterval);
 });
-
-module.exports = {
-  MQTT_Settings,
-};
