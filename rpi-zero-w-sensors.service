@@ -1,5 +1,5 @@
 [Unit]
-Description=Node sensor Express server
+Description=Node sensor MQTT server
 After=syslog.target network-online.target
 
 [Service]

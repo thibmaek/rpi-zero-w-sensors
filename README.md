@@ -4,20 +4,14 @@ Make sure you have Node installed on your Raspberry Pi. This project was develop
 
 1. If your sensors require native binaries, run those steps first. There are npm run tasks for installing all available sensors (e.g `npm run install:dbcm2835` to install DHT binary)
 2. `npm install` to install dependencies
-3. `npm start` to quickly start the Express server on port 3000
+3. `npm start` to quickly start the MQTT server on port 3000
 4. You can define env variables in `env.json`
-5. You can optionally run this server together with an aRest dashboard
 
 There is a basic systemd service provided which you can manually copy or install in the correct location with `npm run install:systemd-service`.
 Then just reload, enable & start the service with `systemctl`.
 
-## Routes
+## Publications
 
-* `/sensor/dht` will get the temperature (C°) & humidity (%) from a DHT sensor
+Set `mqtt.homeassistant` to true in env.json to have topics prefixed with 'homeassistant'.
 
-  ```json
-  {
-    "temperature": 25,
-    "humidity": 40,
-  }
-  ````
+- __DHT__: `rpi-zero-w-sensors/dht`, `rpi-zero-w-sensors/dht/temperature`, `rpi-zero-w-sensors/dht/humidity`

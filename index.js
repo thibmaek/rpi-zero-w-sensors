@@ -1,24 +1,41 @@
-const express = require('express');
+const mqtt = require(`mqtt`);
 
-const config = require('./env.json');
-const initializeSensors = require('./lib/initializeSensors');
-const dhtSensor = require('./routes/sensors/dht');
+const config = require(`./env.json`);
+const initializeSensors = require(`./lib/initializeSensors`);
+const dht = require(`./sensors/dht`);
 
-const app = express();
-initializeSensors();
-
-if (config.arest.enabled) {
-  const aRest = require('pi-arest')(app);
-  aRest.set_id(config.arest.id);
-  aRest.set_name(config.arest.name);
-  aRest.connect();
+try {
+  initializeSensors();
+} catch (err) {
+  console.error(`Could not initialize sensors because the following error occured:`, err.toString());
 }
 
-app.get('/sensor/dht', (_, res) => {
-  const response = dhtSensor();
-  return res.json(response);
+const MQTT_Settings = {
+  get baseTopic() {
+    if (config.mqtt.homeassistant) {
+      return `homeassistant/zero-w-sensors`;
+    }
+
+    return `rpi-zero-w-sensors`;
+  },
+
+  get client() {
+    return `mqtt://${config.mqtt.broker}`;
+  },
+};
+exports.MQTT_Settings = MQTT_Settings;
+
+const client = mqtt.connect(MQTT_Settings.client, {
+  password: config.mqtt.password,
+  port: config.mqtt.port,
+  username: config.mqtt.user,
 });
 
-const server = app.listen(config.port, () => {
-  console.log('Listening on port %d', server.address().port);
+client.on(`connect`, () => {
+  console.log(`Connected to ${MQTT_Settings.client}:${config.mqtt.port}`);
+
+  setInterval(() => {
+    const dhtData = dht.getSensorData();
+    dht.publishTopic(client, dhtData);
+  }, config.sensors.defaultPollingInterval);
 });

@@ -1,0 +1,7 @@
+{
+  "extends": "thibmaek",
+  "rules": {
+    "import/no-commonjs": "off",
+    "camelcase": "off"
+  }
+}
