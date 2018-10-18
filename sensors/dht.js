@@ -21,4 +21,22 @@ exports.publishTopic = (client, data) => {
       `);
     }
   });
+
+  client.publish(`${MQTT_Settings.baseTopic}/dht/temperature`, `${data.temperature}`, {}, err => {
+    if (err) {
+      console.error(`
+        Error publishing: ${MQTT_Settings.baseTopic}/dht/temperature:
+          ${err.toString()}
+      `);
+    }
+  });
+
+  client.publish(`${MQTT_Settings.baseTopic}/dht/humidity`, `${data.humidity}`, {}, err => {
+    if (err) {
+      console.error(`
+        Error publishing: ${MQTT_Settings.baseTopic}/dht/humidity:
+          ${err.toString()}
+      `);
+    }
+  });
 };
